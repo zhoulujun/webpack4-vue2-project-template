@@ -6,6 +6,10 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {VueLoaderPlugin} = require('vue-loader');
+const devMode = process.env.NODE_ENV === 'development';
+// const devMode = process.env. npm_package_scripts_build;
+// const devMode = true;
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const publicPath = '';
 const config = {
     // target: 'dist',//dist 目标目录
@@ -17,8 +21,9 @@ const config = {
         filename: '[name].[hash:5].js'//输出后的文件名称
     },
     resolve: {
-        extensions: ['.js', '.json'] //减少文件查找
+        extensions: ['.js', '.json','.vue'] //减少文件查找
     },
+
     module: {
         rules: [
             {
@@ -28,39 +33,97 @@ const config = {
             {
                 test: /\.css$/,
                 use: [
-                    {
+                   {
                         loader: 'style-loader',
                         options: {
                             // singleton:true //处理为单个style标签
                         }
-                    },
+                    } ,
+                    MiniCssExtractPlugin.loader,
                     {
                         loader: 'css-loader',
                         options: {
-                            // minimize:true //压缩css
+                            // url:false, //false  css中加载图片的路径将不会被解析 不会改变
+                            // minimize:true, //压缩css
+                            importLoaders: 1,//importLoaders代表import进来的资源；2代表css-loader后还需要使用几个loader
+                        }
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+
+                            plugins: [
+                                require('autoprefixer')
+                            ],
+                            browsers: [
+                                "> 1%",
+                                "last 5 versions",
+                                "not ie <= 9",
+                                "ios >= 8",
+                                "android >= 4.0"
+                            ]
                         }
                     }
                 ]
             },
+            {
+                test:/\.(scss)$/,
+                use:[
+                    {
+                        loader: 'style-loader',
+                       /* options: {
+                            singleton:true //处理为单个style标签
+                        }*/
+                    } ,
+                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            // url:false, //false  css中加载图片的路径将不会被解析 不会改变
+                            // minimize:true, //压缩css
+                            importLoaders: 1,
+                            sourceMap: devMode//importLoaders代表import进来的资源；2代表css-loader后还需要使用几个loader
+                        }
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+
+                            plugins: [
+                                require('autoprefixer')
+                            ],
+                            browsers: [
+                                "> 1%",
+                                "last 5 versions",
+                                "not ie <= 9",
+                                "ios >= 8",
+                                "android >= 4.0"
+                            ],
+                            sourceMap: devMode
+                        }
+                    },
+                    {
+                        loader: "sass-loader",
+                        options: {
+                            sourceMap: devMode
+                        }
+                    }
+                ]
+            },
+
             {
                 test: /\.(png|jpg|jpeg|gif)$/,//图片处理
                 use: [
                     {
                         loader: 'url-loader',
-
                         options: {
-                            limit: 2048,
+                            limit: 50,//图片不转base64，减少css的阻塞时间，开启http2，所以也不用雪碧图
                             name: '[name].[hash:5].[ext]',
+                            url:false,//不处理css图片路径,
+                            outputPath:'images'
                         }
                     },
-                    {
-                        loader: 'file-loader',
-                    }
                 ]
-            },
-            {
-                test: /\.(woff|woff2|eot|ttf|otf)$/,//字体处理
-                use: ['url-loader']
             },
 
             {//压缩图片
@@ -69,11 +132,21 @@ const config = {
                     bypassOnDebug: true,
                 }
             },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf)$/,//字体处理
+                use: ['url-loader']
+            },
+
             {//babel编译
                 test: /\.js$/,
                 loader: 'babel-loader',
                 exclude: /node_modules/ //设置node_modules里的js文件不用解析
             },
+
+
+
+
+
 
             {
                 test: /\.vue$/,
@@ -89,12 +162,21 @@ const config = {
     },
     plugins: [
         new VueLoaderPlugin(),
+        new MiniCssExtractPlugin({
+            filename: '[name].[hash:5].css',
+            chunkFilename: '[id].[hash].css',
+            disable: false,  //是否禁用此插件
+            allChunks: true
+        }),
+
         new HtmlWebpackPlugin({
-            filename: './index.html',//输出文件
-            template: path.resolve(__dirname, './src/index.html'),//模板文件
-            inject: 'body',//插入位置
-            chunks: ['index'],//加入的js文件，若无此属性，则默认为所有js
-            hash: true,
+            template:'./index.html',//本地模板文件的位置，支持加载器(如handlebars、ejs、undersore、html等)，如比如 handlebars!src/index.hbs；
+            filename: './index.html',//输出文件的文件名称，默认为index.html，不配置就是该文件名；此外，还可以为输出文件指定目录位置（例如'html/index.html'）
+            chunks:['index'],
+            inject:true,//1、true或者body：所有JavaScript资源插入到body元素的底部2、head: 所有JavaScript资源插入到head元素中3、false： 所有静态资源css和JavaScript都不会注入到模板文件中
+            showErrors:true,//是否将错误信息输出到html页面中
+            hash:false,//是否为所有注入的静态资源添加webpack每次编译产生的唯一hash值
+            favicon: '',//添加特定的 favicon 路径到输出的 HTML 文件中。
             minify: {
                 caseSensitive: false,
                 removeComment: true,//移除注释

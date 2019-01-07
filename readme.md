@@ -10,6 +10,9 @@ npm run build
 ```
 
 
+
+
+
 #目录结构
 
 #团队规范
@@ -54,6 +57,13 @@ development很明显就是我们开发所需要的依赖包，而打包好上线
 }
 ```
 #####注：webpack4只需要一个--mode选项 指定 production||development
+参考http://www.ruanyifeng.com/blog/2016/10/npm_scripts.html
++如果是并行执行（即同时的平行执行），可以使用&符号。
++如果是继发执行（即只有前一个任务成功，才执行下一个任务），可以使用&&符号。
+npm run script1.js & npm run script2.js
+npm run script1.js && npm run script2.js
+
+
 ___
 ####配置webpack配置文件 webpack.config.js
 #####rule对象参数说明
@@ -155,31 +165,28 @@ npm install image-webpack-loader --save-dev
 
 ```javascript
     [
-        {//压缩图片
-            loader: 'img-loader',
-            options: {
-                pngquant: {
-                    // 调整质量
-                    quality: 80
-                }
-            }
+        {
+            test: /\.(png|jpg|jpeg|gif)$/i,//图片处理
+            use: [
+                {
+                    loader: 'url-loader',
+                    options: {
+                        limit: 0,//图片不转base64，增加css的阻塞时间，开启http2，所以也不用雪碧图
+                        name: '[name].[hash:5].[ext]',
+                    }
+                },
+            ]
         },
-        {//合成雪碧图
-            loader: 'postcss-loader',
+        {//压缩图片
+            loader: 'image-webpack-loader',
             options: {
-                ident: 'postcss',
-                plugins: [
-                    // CSS 雪碧图
-                    require('postcss-sprites')({
-                        spritePath: 'dist/assets/imgs/sprites',
-                        retina: true
-                    }),
-                    require('postcss-cssnext')()
-                ]
+                bypassOnDebug: true,
             }
         },
     ]
 ```
+
+
 
 ####配置webapck server
 ```bash
@@ -187,14 +194,45 @@ npm install webpack-dev-server open --save-dev
 ```
 参看 webpack.server.js 注释
 
+ "start": "node webpack.server.js",
+npm start 启动项目
 
+###配置css优化设置
 
+```bash
+npm install --save-dev postcss-loader autoprefixer postcss autoprefixer  mini-css-extract-plugin
+```
+#####注：
++ webpack4已经废弃 extract-text-webpack-plugin 这个插件了，现在使用的是 mini-css-extract-plugin
++ 在项目根目录新建postcss.config.js文件，并对postcss进行配置：
+```javascript
+module.exports = {
+    plugins: {
+        'autoprefixer': {
+            browsers: [
+                "> 1%",
+                "last 5 versions",
+                "not ie <= 9",
+                "ios >= 8",
+                "android >= 4.0"
+            ]
+        }
+    }
+};
+```
+不然会报出：Error: No PostCSS Config found  
+
+####配置sass 
+```bash
+npm install --save-dev  node-sass sass-loader
+
+```
 
 
 
 ####配置vue 
 ```bash
-npm install vue vue-router vue-loader vue-template-compiler vue-style-loader  --save-dev
+npm install --save-dev vue vue-router vue-loader vue-template-compiler vue-style-loader  
 ```
 
 ```javascript
@@ -207,6 +245,21 @@ npm install vue vue-router vue-loader vue-template-compiler vue-style-loader  --
 ```
 
 
+配置第三方包，比如jquery
+```bash
+npm install imports-loader --save-dev
+```
+```javascript
+[
+    {
+        loader: 'imports-loader',
+        options: {
+            // 模块为 value，同样webpack也会解析它，如果没有则从alias中解析它
+            $: 'jquery'
+        }
+    }
+]
+```
 
 
 

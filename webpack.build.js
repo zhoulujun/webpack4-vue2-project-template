@@ -3,7 +3,6 @@
  *@version 1.0.0
  */
 const webpack =require("webpack");
-
 const config = require('./webpack.config');
 config.mode='production';
 

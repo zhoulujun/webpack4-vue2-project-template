@@ -5,11 +5,10 @@
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 const open = require('open');
-
+process.env.NODE_ENV='development';
 const config = require('./webpack.config');
-
 config.mode = 'development';
-// config.devtools='#cheap-module-eval-source-map';
+config.devtool='cheap-module-eval-source-map';
 config.plugins.push(
     new webpack.HotModuleReplacementPlugin(),//热替换
     new webpack.NoEmitOnErrorsPlugin(),//去除系统抛出的错误消息
