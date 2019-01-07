@@ -4,13 +4,15 @@
  */
 'use strict';
 const path = require('path');
+const os = require('os');
+const HappyPack = require('happypack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {VueLoaderPlugin} = require('vue-loader');
-const devMode = process.env.NODE_ENV === 'development';
-// const devMode = process.env. npm_package_scripts_build;
-// const devMode = true;
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const devMode = process.env.NODE_ENV === 'development';
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
 const publicPath = '';
+console.log('devMode___________',devMode);
 const config = {
     // target: 'dist',//dist 目标目录
     entry: {//配置页面入口
@@ -32,13 +34,13 @@ const config = {
             },
             {
                 test: /\.css$/,
-                use: [
-                   {
+                use: [//用法和loader 的配置一样
+                    devMode?{
                         loader: 'style-loader',
                         options: {
                             // singleton:true //处理为单个style标签
                         }
-                    } ,
+                    } :
                     MiniCssExtractPlugin.loader,
                     {
                         loader: 'css-loader',
@@ -69,12 +71,12 @@ const config = {
             {
                 test:/\.(scss)$/,
                 use:[
-                    {
+                    devMode?{
                         loader: 'style-loader',
-                       /* options: {
-                            singleton:true //处理为单个style标签
-                        }*/
-                    } ,
+                        /* options: {
+                             singleton:true //处理为单个style标签
+                         }*/
+                    } :
                     MiniCssExtractPlugin.loader,
                     {
                         loader: 'css-loader',
@@ -103,10 +105,8 @@ const config = {
                         }
                     },
                     {
-                        loader: "sass-loader",
-                        options: {
-                            sourceMap: devMode
-                        }
+                        loader: 'happypack/loader?id=scss',
+
                     }
                 ]
             },
@@ -139,29 +139,41 @@ const config = {
 
             {//babel编译
                 test: /\.js$/,
-                loader: 'babel-loader',
+                loader: ['happypack/loader?id=js'],
                 exclude: /node_modules/ //设置node_modules里的js文件不用解析
             },
 
 
-
-
-
-
             {
                 test: /\.vue$/,
-                use: 'vue-loader'
+                loader: 'vue-loader',
             },
-
-
-
-
-
 
         ]
     },
     plugins: [
+
+        new HappyPack({
+            id:'js',//用id来标识 happypack处理那里类文件
+            threadPool: happyThreadPool, //共享进程池
+            loaders: [
+                {
+                    loader: 'babel-loader',
+                },
+            ],
+        }),
+        new HappyPack({
+            id:'scss',//用id来标识 happypack处理那里类文件
+            threadPool: happyThreadPool, //共享进程池
+            loaders: [
+                {
+                    loader: 'sass-loader',
+                },
+            ],
+        }),
+
         new VueLoaderPlugin(),
+
         new MiniCssExtractPlugin({
             filename: '[name].[hash:5].css',
             chunkFilename: '[id].[hash].css',

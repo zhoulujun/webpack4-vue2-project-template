@@ -222,11 +222,44 @@ module.exports = {
 ```
 不然会报出：Error: No PostCSS Config found  
 
+####自动消除冗余的css代码
+```bash
+npm install --save-dev  purifycss-webpack purify-css
+
+
 ####配置sass 
 ```bash
 npm install --save-dev  node-sass sass-loader
 
 ```
+
+
+
+##webpack构建优化
+
+####多线程 happypack 
+
+```bash
+npm install --save-dev  happypack
+
+```
+
+配置第三方包，比如jquery
+```bash
+npm install imports-loader --save-dev
+```
+```javascript
+[
+    {
+        loader: 'imports-loader',
+        options: {
+            // 模块为 value，同样webpack也会解析它，如果没有则从alias中解析它
+            $: 'jquery'
+        }
+    }
+]
+```
+
 
 
 
@@ -245,21 +278,6 @@ npm install --save-dev vue vue-router vue-loader vue-template-compiler vue-style
 ```
 
 
-配置第三方包，比如jquery
-```bash
-npm install imports-loader --save-dev
-```
-```javascript
-[
-    {
-        loader: 'imports-loader',
-        options: {
-            // 模块为 value，同样webpack也会解析它，如果没有则从alias中解析它
-            $: 'jquery'
-        }
-    }
-]
-```
 
 
 
