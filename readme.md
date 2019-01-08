@@ -297,10 +297,21 @@ npm install --save-dev webpack-subresource-integrity webpack-assets-manifest
 ```
 两个插件准备写成一个，看来不到春节没有时间
 
+
+####增加webpack 模块分析
+```bash
+npm install --save-dev webpack-bundle-analyzer
+```
+配置参看 webpack.analy
+参考文章：https://www.cnblogs.com/ssh-007/p/7944491.html
+
 ####增加上传至服务器
 ```bash
 npm install --save-dev webpack-sftp-client
 ```
+
+
+
 
 
 ####配置vue 
