@@ -144,7 +144,12 @@ const config = {
                 exclude: /node_modules/ //设置node_modules里的js文件不用解析
             },
 
-
+            {//eslint 检查
+                test: /\.(js|jsx)$/,
+                enforce: 'pre',
+                loader: ['eslint-loader'],
+                exclude: /node_modules/ //设置node_modules里的js文件不用解析
+            },
             {
                 test: /\.vue$/,
                 loader: 'vue-loader',

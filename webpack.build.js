@@ -44,7 +44,12 @@ config.plugins.push(
     }),
     new WebpackSubresourceIntegrity({
         hashFuncNames: ['sha256', 'sha384'],
-    })
+    }),
+    /*new webpack.optimize.UglifyJsPlugin(),
+    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.AggressiveMergingPlugin(),
+    new webpack.NoErrorsPlugin()*/
+    //发布到服务器
     /*new WebpackSftpClient({
         port: '20020',
         host: '10.111.111.38',
