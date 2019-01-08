@@ -1,6 +1,7 @@
 /**
  *@author Create by zhoulujun.cn on 1/4/1910:30 AM
  *@version 1.0.0
+ * webpack 配置文件
  */
 'use strict';
 const path = require('path');
@@ -14,7 +15,7 @@ const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
 const publicPath = '';
 console.log('devMode___________',devMode);
 const config = {
-    // target: 'dist',//dist 目标目录
+    // target: 'web',//告知 webpack 为目标(target)指定一个环境。默认web
     entry: {//配置页面入口
         index: './src/index.js'
     },
