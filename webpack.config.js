@@ -35,7 +35,8 @@ const config = {
             },
             {
                 test: /\.css$/,
-                use: [//用法和loader 的配置一样
+                use: [//使用use可配置多个loader进行处理。顺序由最后一个至第一个。此处匹配到css文件后，先由postcss-loader处理，css-loader处理后再交由style-loader处理
+                  'vue-style-loader',//将样式通过style标签的方式加入到dom中
                     devMode?{
                         loader: 'style-loader',
                         options: {
@@ -43,7 +44,7 @@ const config = {
                         }
                     } :
                     MiniCssExtractPlugin.loader,
-                    {
+                    {//css-loader 解释(interpret) @import 和 url()
                         loader: 'css-loader',
                         options: {
                             // url:false, //false  css中加载图片的路径将不会被解析 不会改变
@@ -51,7 +52,7 @@ const config = {
                             importLoaders: 1,//importLoaders代表import进来的资源；2代表css-loader后还需要使用几个loader
                         }
                     },
-                    {
+                    {//需在css-loader/style-loader后面，在其他预处理前面
                         loader: 'postcss-loader',
                         options: {
 
@@ -69,9 +70,10 @@ const config = {
                     }
                 ]
             },
-            {
+            { //sass文件。vue中会将使用sass写的样式抛出给该rule处理.vue中lang可以设置为sass/scss，只需将两者类型都匹配到sass就行
                 test:/\.(scss)$/,
-                use:[
+                use:[//使用use可配置多个loader进行处理。顺序由最后一个至第一个。此处匹配到css文件后，先由css-loader进行处理，css-loader处理后再交由vue-style-loader处理
+                  'vue-style-loader',//将样式通过style标签的方式加入到dom中
                     devMode?{
                         loader: 'style-loader',
                         /* options: {
@@ -79,7 +81,7 @@ const config = {
                          }*/
                     } :
                     MiniCssExtractPlugin.loader,
-                    {
+                    {//css-loader 解释(interpret) @import 和 url()
                         loader: 'css-loader',
                         options: {
                             // url:false, //false  css中加载图片的路径将不会被解析 不会改变
@@ -88,7 +90,7 @@ const config = {
                             sourceMap: devMode//importLoaders代表import进来的资源；2代表css-loader后还需要使用几个loader
                         }
                     },
-                    {
+                    {//需在css-loader/style-loader后面，在其他预处理前面
                         loader: 'postcss-loader',
                         options: {
 
