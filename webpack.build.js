@@ -24,6 +24,7 @@ config.optimization = {
     cacheGroups: {
       commons: {
         chunks: 'initial',//打包初始时依赖第三方
+        name:'commons',
         minChunks: 2,//最小共用次数
         maxInitialRequests: 5,
         minSize: 0
@@ -37,7 +38,7 @@ config.optimization = {
       }
     }
   },
-  runtimeChunk: true// 单独抽离 runtimeChunk 之后，每次打包都会生成一个runtimeChunk.xxx.js。
+  runtimeChunk: {name:'runtime'}// 单独抽离 runtimeChunk 之后，每次打包都会生成一个runtimeChunk.xxx.js。
 };
 
 config.plugins.push(

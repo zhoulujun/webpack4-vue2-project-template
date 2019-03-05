@@ -117,43 +117,8 @@ const config = {
         test: /\.(less)$/,
         use: [//使用use可配置多个loader进行处理。顺序由最后一个至第一个。此处匹配到css文件后，先由css-loader进行处理，css-loader处理后再交由vue-style-loader处理
           'vue-style-loader',//将样式通过style标签的方式加入到dom中
-          devMode ? {
-              loader: 'style-loader'
-              /* options: {
-                   singleton:true //处理为单个style标签
-               }*/
-            } :
-            MiniCssExtractPlugin.loader,
-          {//css-loader 解释(interpret) @import 和 url()
-            loader: 'css-loader',
-            options: {
-              // url:false, //false  css中加载图片的路径将不会被解析 不会改变
-              // minimize:true, //压缩css
-              importLoaders: 1,
-              sourceMap: devMode//importLoaders代表import进来的资源；2代表css-loader后还需要使用几个loader
-            }
-          },
-          {//需在css-loader/style-loader后面，在其他预处理前面
-            loader: 'postcss-loader',
-            options: {
-
-              plugins: [
-                require('autoprefixer')
-              ],
-              browsers: [
-                '> 1%',
-                'last 5 versions',
-                'not ie <= 9',
-                'ios >= 8',
-                'android >= 4.0'
-              ],
-              sourceMap: devMode
-            }
-          },
-          {
-            loader: 'happypack/loader?id=less'
-
-          }
+          'style-loader',
+          'sass-loader'
         ]
       },
 
@@ -244,7 +209,7 @@ const config = {
     new HtmlWebpackPlugin({
       template: './src/index.html',//本地模板文件的位置，支持加载器(如handlebars、ejs、undersore、html等)，如比如 handlebars!src/index.hbs；
       filename: './index.html',//输出文件的文件名称，默认为index.html，不配置就是该文件名；此外，还可以为输出文件指定目录位置（例如'html/index.html'）
-      chunks: ['index'],
+      chunks: ['index','vendor','commons','manifest'],
       inject: true,//1、true或者body：所有JavaScript资源插入到body元素的底部2、head: 所有JavaScript资源插入到head元素中3、false： 所有静态资源css和JavaScript都不会注入到模板文件中
       showErrors: true,//是否将错误信息输出到html页面中
       hash: false,//是否为所有注入的静态资源添加webpack每次编译产生的唯一hash值
