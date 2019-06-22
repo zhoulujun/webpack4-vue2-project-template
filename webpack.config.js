@@ -108,7 +108,7 @@ const config = {
             }
           },
           {
-            loader: 'happypack/loader?id=scss'
+            loader: 'sassjs-loader'
 
           }
         ]
@@ -117,8 +117,7 @@ const config = {
         test: /\.(less)$/,
         use: [//使用use可配置多个loader进行处理。顺序由最后一个至第一个。此处匹配到css文件后，先由css-loader进行处理，css-loader处理后再交由vue-style-loader处理
           'vue-style-loader',//将样式通过style标签的方式加入到dom中
-          'style-loader',
-          'sass-loader'
+          'style-loader'
         ]
       },
 
@@ -183,7 +182,7 @@ const config = {
       threadPool: happyThreadPool, //共享进程池
       loaders: [
         {
-          loader: 'sass-loader'
+          loader: 'sassjs-loader'
         }
       ]
     }),

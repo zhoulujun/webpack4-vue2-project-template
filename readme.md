@@ -3,7 +3,7 @@ webpack4 sass babel vue2 标准工程模板
 > webpack 一直以来最饱受诟病的就是其配置门槛极高，配置内容极其复杂和繁琐，容易让人从入门到放弃，而它的后起之秀如 rollup、parcel 等均在配置流程上做了极大的优化，做到开箱即用，所以webpack 4 也从中借鉴了不少经验来提升自身的配置效率。愿世间再也不需要 webpack 配置工程师。
 
 
-
+目前node-sass sass-loader 替换为 sass.js 与sassjs-loader 免除node-sass 安装困难的烦恼
 
 
 启动:
@@ -264,7 +264,15 @@ npm install --save-dev  optimize-css-assets-webpack-plugin
 npm install --save-dev  node-sass sass-loader
 
 ```
+但是node-sass 是个坑货
+所以最好换位
+```bash
+$ npm install --save-dev sassjs-loader sass.js
 
+```
+https://www.npmjs.com/package/sass
+
+https://www.npmjs.com/package/sassjs-loader
 
 
 ## webpack构建优化

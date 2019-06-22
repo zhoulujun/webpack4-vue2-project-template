@@ -21,7 +21,7 @@ config.plugins.push(
 
 const addressObj = {
     ip: getLocalIPAdress(),
-    port: 11037
+    port: 11036
 };
 
 new WebpackDevServer(webpack(config), {
